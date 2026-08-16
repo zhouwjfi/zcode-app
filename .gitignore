@@ -14,3 +14,6 @@ local.properties
 # 签名（发布时自行保管）
 *.jks
 *.keystore
+
+# 本项目 CI 用的公开发布密钥，需要入库
+!app/release.keystore
