@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.webkit.CookieManager;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private View cameraOverlay;
     private View scanLine;
     private boolean manualMode = false;
+    private ValueCallback<Uri[]> fileUploadCallback;
+    private ActivityResultLauncher<String> fileUploadLauncher;
     private ObjectAnimator scanAnim;
     private ActivityResultLauncher<String> cameraPermissionLauncher;
 
@@ -76,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
                         startEmbeddedScanner();
                     } else {
                         Toast.makeText(this, R.string.toast_camera_denied, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // 文件选择器结果 → 回传给网页
+        fileUploadLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(), uri -> {
+                    if (fileUploadCallback != null) {
+                        fileUploadCallback.onReceiveValue(
+                                uri != null ? new Uri[]{uri} : null);
+                        fileUploadCallback = null;
                     }
                 });
 
@@ -136,7 +149,19 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback,
+                                             FileChooserParams params) {
+                // 网页 <input type=file>：交给系统文件选择器
+                if (fileUploadCallback != null) {
+                    fileUploadCallback.onReceiveValue(null); // 取消上一次未完成的
+                }
+                fileUploadCallback = callback;
+                fileUploadLauncher.launch("*/*");
+                return true;
+            }
+        });
 
         // 设置入口1：桌面图标长按快捷方式（见 onNewIntent）
         // 设置入口2：网页退无可退时按返回，弹退出/设置对话框（见 onBackPressed）
