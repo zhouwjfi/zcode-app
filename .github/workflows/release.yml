@@ -27,5 +27,25 @@ jobs:
       - name: Create GitHub Release and upload APK
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          body: |
+            [ZCode](https://zcode.z.ai) Remote Control 的安卓客户端。
+
+            ## ✨ 功能
+            - 📷 扫描 ZCode 桌面端 Remote Control 二维码，在手机上连接桌面窗口
+            - 🖥 沉浸式全屏，查看/切换工作区与任务、跟进 Agent 进度
+            - 🔒 连接 URL 持久化，启动直达
+            - ✋ 长按应用图标 →「修改网址」快捷方式
+            - 🌐 中英双语（跟随系统语言）
+            - ✨ 品牌启动屏
+
+            ## 📦 安装
+            下载下方 `app-release.apk`，手机上直接安装（需允许未知来源）。桌面端 ZCode 打开 Remote Control 弹窗扫码即可接入。
+
+            ---
+
+            Android client for [ZCode](https://zcode.z.ai) Remote Control.
+
+            Scan the QR code from the ZCode desktop app to connect to your desktop window from your phone — browse workspaces and tasks, follow Agent progress on the go. Fullscreen, bilingual (EN/中文), with a launcher shortcut to change the URL.
+
+            Download `app-release.apk` below to install.
           files: app/build/outputs/apk/release/app-release.apk
