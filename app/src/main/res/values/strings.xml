@@ -4,9 +4,13 @@
     <string name="scan_button">Scan QR Code</string>
     <string name="manual_toggle">Enter address manually</string>
     <string name="go_button">Go</string>
-    <string name="reconfigure_hint">Long-press the screen to reconfigure</string>
+    <string name="reconfigure_hint">Long-press the app icon to change the URL</string>
     <string name="url_hint">https://example.com</string>
     <string name="toast_empty_url">Please enter a URL</string>
     <string name="toast_camera_denied">Camera permission is required to scan</string>
     <string name="scan_prompt">Point at the QR code</string>
+    <string name="shortcut_settings">Change URL</string>
+    <string name="exit_dialog_title">Leave ZCode?</string>
+    <string name="exit_dialog_settings">Change URL</string>
+    <string name="exit_dialog_exit">Exit</string>
 </resources>

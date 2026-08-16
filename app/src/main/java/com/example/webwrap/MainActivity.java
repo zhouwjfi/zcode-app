@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String PREFS = "webwrap";
     private static final String KEY_URL = "url";
+    private static final String ACTION_SETTINGS = "com.zhouwjfi.zcode.SETTINGS";
 
     private WebView webView;
     private ScrollView setupScreen;
@@ -135,11 +137,9 @@ public class MainActivity extends AppCompatActivity {
         });
         webView.setWebChromeClient(new WebChromeClient());
 
-        // 长按屏幕打开设置
-        webView.setOnLongClickListener(v -> {
-            showSetupScreen();
-            return true;
-        });
+        // 设置入口1：桌面图标长按快捷方式（见 onNewIntent）
+        // 设置入口2：网页退无可退时按返回，弹退出/设置对话框（见 onBackPressed）
+        // 首次启动未配置 URL 时直接显示设置页
 
         String url = getPrefs().getString(KEY_URL, null);
         if (url == null || url.isEmpty()) {
@@ -147,6 +147,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setupScreen.setVisibility(View.GONE);
             webView.loadUrl(url);
+        }
+        // 冷启动直接走快捷方式的情况
+        if (ACTION_SETTINGS.equals(getIntent().getAction())) {
+            showSetupScreen();
         }
 
         applyImmersive();
@@ -290,12 +294,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (ACTION_SETTINGS.equals(intent.getAction())) {
+            showSetupScreen();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
+        if (setupScreen.getVisibility() == View.VISIBLE) {
+            super.onBackPressed(); // 设置页再按返回直接退出
+            return;
+        }
         if (webView.canGoBack()) {
             webView.goBack();
-        } else {
-            super.onBackPressed();
+            return;
         }
+        // 设置入口2：退出前询问
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.exit_dialog_title)
+                .setPositiveButton(R.string.exit_dialog_settings, (d, w) -> showSetupScreen())
+                .setNegativeButton(R.string.exit_dialog_exit, (d, w) -> finish())
+                .setCancelable(true)
+                .show();
     }
 
     @Override
