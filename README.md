@@ -12,8 +12,6 @@ Unofficial Android client for [ZCode](https://zcode.z.ai) Remote Control. Scan t
 - 🖥 **Immersive fullscreen** — status bar and navigation bar hidden, no browser UI
 - 🔒 **Persistent settings** — once configured, the app opens straight into the site
 - ✋ **Long-press anywhere** to reopen setup and change the URL
-- 🔙 Back key navigates web history
-- ✨ Branded splash screen (once per cold start, with entrance animation)
 - Full Cookie / localStorage / JS support; external schemes (`tel:`, `mailto:`…) handed to the system
 - Cleartext HTTP allowed, so intranet URLs work (disable via `usesCleartextTraffic` in the Manifest if desired)
 
