@@ -6,6 +6,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -23,10 +24,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.view.inputmethod.EditorInfo;
-import android.view.KeyEvent;
 import android.widget.EditText;
-import android.widget.Button;
-import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -35,8 +34,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.BarcodeView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,9 +45,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String ACTION_SETTINGS = "com.zhouwjfi.zcode.SETTINGS";
 
     private WebView webView;
-    private ScrollView setupScreen;
+    private View setupScreen;
     private EditText urlInput;
-    private ActivityResultLauncher<ScanOptions> qrLauncher;
+    private BarcodeView barcodeView;
+    private View cameraOverlay;
+    private View scanLine;
+    private boolean manualMode = false;
+    private ObjectAnimator scanAnim;
     private ActivityResultLauncher<String> cameraPermissionLauncher;
 
     private static boolean splashPlayed = false; // 进程级：品牌尾屏每次冷启动只播一次
@@ -66,16 +70,10 @@ public class MainActivity extends AppCompatActivity {
             splash.setVisibility(View.GONE);
         }
 
-        qrLauncher = registerForActivityResult(new ScanContract(), result -> {
-            String scanned = result.getContents();
-            if (scanned != null && !scanned.isEmpty()) {
-                saveAndLoad(scanned);
-            }
-        });
         cameraPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(), granted -> {
                     if (granted) {
-                        startScanner();
+                        startEmbeddedScanner();
                     } else {
                         Toast.makeText(this, R.string.toast_camera_denied, Toast.LENGTH_SHORT).show();
                     }
@@ -84,15 +82,19 @@ public class MainActivity extends AppCompatActivity {
         webView = findViewById(R.id.webview);
         setupScreen = findViewById(R.id.setupScreen);
         urlInput = findViewById(R.id.urlInput);
+        barcodeView = findViewById(R.id.barcodeView);
+        cameraOverlay = findViewById(R.id.cameraOverlay);
+        scanLine = findViewById(R.id.scanLine);
 
-        findViewById(R.id.manualToggle).setOnClickListener(v -> {
-            View manual = findViewById(R.id.manualInput);
-            boolean show = manual.getVisibility() != View.VISIBLE;
-            manual.setVisibility(show ? View.VISIBLE : View.GONE);
-            if (show) {
-                urlInput.requestFocus();
+        // 占位层可点击：仅在未授权时重新申请（手动输入模式下点击不唤醒相机）
+        cameraOverlay.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
             }
         });
+        // 扫码 ↔ 手动 模式切换
+        findViewById(R.id.manualToggle).setOnClickListener(v -> switchMode(manualMode = !manualMode));
         urlInput.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 submitUrl();
@@ -101,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
         findViewById(R.id.goButton).setOnClickListener(v -> submitUrl());
-        findViewById(R.id.scanButton).setOnClickListener(v -> startScanWithPermission());
         WebSettings s = webView.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
@@ -214,12 +215,28 @@ public class MainActivity extends AppCompatActivity {
         return getSharedPreferences(PREFS, MODE_PRIVATE);
     }
 
-    /** 显示设置页并回填当前 URL（手动输入区默认收起） */
+    /** 扫码 ↔ 手动 输入模式切换 */
+    private void switchMode(boolean manual) {
+        findViewById(R.id.scanArea).setVisibility(manual ? View.GONE : View.VISIBLE);
+        findViewById(R.id.manualArea).setVisibility(manual ? View.VISIBLE : View.GONE);
+        TextView toggle = findViewById(R.id.manualToggle);
+        toggle.setText(manual ? R.string.scan_toggle : R.string.manual_toggle);
+        if (manual) {
+            stopEmbeddedScanner();
+            urlInput.requestFocus();
+            urlInput.setSelection(urlInput.getText().length());
+        } else {
+            prepareCamera();
+        }
+    }
+
+    /** 显示设置页并回填当前 URL（默认扫码模式），并启动嵌入式扫码 */
     private void showSetupScreen() {
         String current = getPrefs().getString(KEY_URL, "");
         urlInput.setText(current);
         urlInput.setSelection(urlInput.getText().length());
-        findViewById(R.id.manualInput).setVisibility(View.GONE);
+        manualMode = false;
+        switchMode(false);
         setupScreen.setVisibility(View.VISIBLE);
         applyImmersive();
     }
@@ -233,22 +250,54 @@ public class MainActivity extends AppCompatActivity {
         saveAndLoad(raw);
     }
 
-    private void startScanWithPermission() {
+    /** 已授权直接开扫；未授权立即弹权限申请（占位层仅作等待提示） */
+    private void prepareCamera() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
-            startScanner();
+            startEmbeddedScanner();
         } else {
+            cameraOverlay.setVisibility(View.VISIBLE);
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
     }
 
-    private void startScanner() {
-        ScanOptions options = new ScanOptions();
-        options.setPrompt(getString(R.string.scan_prompt));
-        options.setBeepEnabled(false);
-        options.setOrientationLocked(true);
-        options.setCaptureActivity(ScanActivity.class);
-        qrLauncher.launch(options);
+    /** 嵌入式扫码：取景框内实时预览，识别即连 */
+    private void startEmbeddedScanner() {
+        cameraOverlay.setVisibility(View.GONE);
+        barcodeView.decodeContinuous(new BarcodeCallback() {
+            @Override
+            public void barcodeResult(BarcodeResult result) {
+                String text = result.getText();
+                if (text != null && !text.isEmpty()) {
+                    barcodeView.pause();
+                    saveAndLoad(text);
+                }
+            }
+        });
+        barcodeView.resume();
+        startScanLine();
+    }
+
+    private void stopEmbeddedScanner() {
+        barcodeView.pause();
+        barcodeView.stopDecoding();
+        if (scanAnim != null) {
+            scanAnim.cancel();
+            scanAnim = null;
+        }
+    }
+
+    /** 扫描线往返动画 */
+    private void startScanLine() {
+        if (scanAnim != null) return;
+        scanLine.post(() -> {
+            float h = ((View) scanLine.getParent()).getHeight() - scanLine.getHeight();
+            scanAnim = ObjectAnimator.ofFloat(scanLine, View.TRANSLATION_Y, h * 0.06f, h * 0.94f);
+            scanAnim.setDuration(1300);
+            scanAnim.setRepeatCount(ValueAnimator.INFINITE);
+            scanAnim.setRepeatMode(ValueAnimator.REVERSE);
+            scanAnim.start();
+        });
     }
 
     /** 规范化 URL、保存并加载 */
@@ -258,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
             raw = "https://" + raw;
         }
         getPrefs().edit().putString(KEY_URL, raw).apply();
+        stopEmbeddedScanner();
         setupScreen.setVisibility(View.GONE);
         applyImmersive();
         webView.loadUrl(raw);
@@ -293,6 +343,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         webView.onPause();
+        if (setupScreen.getVisibility() == View.VISIBLE) {
+            stopEmbeddedScanner();
+        }
     }
 
     @Override
@@ -300,6 +353,11 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         webView.onResume();
         applyImmersive();
+        if (setupScreen.getVisibility() == View.VISIBLE && !manualMode
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+            startEmbeddedScanner();
+        }
     }
 
     @Override

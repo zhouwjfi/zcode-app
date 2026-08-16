@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,113 +9,219 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- 首次启动 / 设置 URL 页面 -->
-    <ScrollView
+    <!-- 设置页：终端/蓝图风，嵌入式扫码 -->
+    <FrameLayout
         android:id="@+id/setupScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#0B0E14"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        android:visibility="gone">
 
-        <LinearLayout
+        <!-- 蓝图网格背景 -->
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="32dp">
+            android:layout_height="match_parent"
+            android:alpha="0.7"
+            android:background="@drawable/bg_grid" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_card"
-                android:orientation="vertical"
                 android:gravity="center_horizontal"
+                android:orientation="vertical"
                 android:paddingStart="32dp"
+                android:paddingTop="24dp"
                 android:paddingEnd="32dp"
-                android:paddingTop="36dp"
-                android:paddingBottom="32dp">
+                android:paddingBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.12"
+                        android:text="ZCODE_REMOTE"
+                        android:textColor="#667085"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.12"
+                        android:text="LINK:IDLE"
+                        android:textColor="#2FC5FF"
+                        android:textSize="10sp" />
+                </LinearLayout>
 
                 <ImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_marginTop="40dp"
                     android:contentDescription="ZCode"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/logo" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="ZCode"
-                    android:textColor="#0B0E14"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/scanButton"
-                    android:layout_width="280dp"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="28dp"
-                    android:background="@drawable/bg_btn_primary"
-                    android:text="@string/scan_button"
-                    android:textColor="#FFFFFF"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/manualToggle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:padding="6dp"
-                    android:text="@string/manual_toggle"
-                    android:textColor="#1B6DFF"
-                    android:textSize="13sp" />
-
-                <!-- 手动输入区，默认隐藏 -->
+                <!-- 扫码模式区域 -->
                 <LinearLayout
-                    android:id="@+id/manualInput"
-                    android:layout_width="280dp"
+                    android:id="@+id/scanArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <!-- 取景框：嵌入式相机预览 -->
+                    <FrameLayout
+                        android:id="@+id/reticle"
+                        android:layout_width="240dp"
+                        android:layout_height="240dp"
+                        android:layout_marginTop="44dp">
+
+                    <com.journeyapps.barcodescanner.BarcodeView
+                        android:id="@+id/barcodeView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@null"
+                        android:src="@drawable/reticle_corners" />
+
+                    <View
+                        android:id="@+id/scanLine"
+                        android:layout_width="200dp"
+                        android:layout_height="2dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/bg_scanline" />
+
+                    <!-- 未授权时的占位层（点击重试授权） -->
+                    <LinearLayout
+                        android:id="@+id/cameraOverlay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#10151F"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="monospace"
+                            android:gravity="center"
+                            android:letterSpacing="0.1"
+                            android:text="@string/camera_hint"
+                            android:textColor="#667085"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/scan_title"
+                    android:textColor="#F5F7FA"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
+                    android:fontFamily="monospace"
+                    android:text="@string/scan_sub"
+                    android:textColor="#98A2B3"
+                    android:textSize="12sp" />
+                </LinearLayout>
+                <!-- /扫码模式区域 -->
+
+                <!-- 手动模式区域 -->
+                <LinearLayout
+                    android:id="@+id/manualArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:background="@drawable/bg_manual_panel"
                     android:orientation="vertical"
+                    android:padding="12dp"
                     android:visibility="gone">
 
                     <EditText
                         android:id="@+id/urlInput"
                         android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:background="@drawable/bg_input"
+                        android:layout_height="48dp"
+                        android:background="@null"
+                        android:fontFamily="monospace"
                         android:hint="@string/url_hint"
                         android:imeOptions="actionGo"
                         android:inputType="textUri"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textColor="#0B0E14"
-                        android:textColorHint="#98A2B3"
-                        android:textSize="15sp" />
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textColor="#F5F7FA"
+                        android:textColorHint="#475467"
+                        android:textSize="13sp" />
 
-                    <Button
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#232B3A" />
+
+                    <TextView
                         android:id="@+id/goButton"
                         android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_btn_secondary"
+                        android:layout_height="48dp"
+                        android:fontFamily="monospace"
+                        android:gravity="center"
                         android:text="@string/go_button"
-                        android:textColor="#1B6DFF"
-                        android:textSize="15sp" />
+                        android:textColor="#2FC5FF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
-            </LinearLayout>
+                <!-- /手动模式区域 -->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/reconfigure_hint"
-                android:textColor="#475467"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </ScrollView>
+                <!-- 模式切换 -->
+                <TextView
+                    android:id="@+id/manualToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp"
+                    android:background="@drawable/bg_manual_chip"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.06"
+                    android:paddingStart="14dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/manual_toggle"
+                    android:textColor="#1B6DFF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:letterSpacing="0.14"
+            android:text="ZHOUWJ.FI@GMAIL.COM"
+            android:textColor="#3D4557"
+            android:textSize="10sp" />
+    </FrameLayout>
 
     <!-- 品牌尾屏：图标 + wordmark + 邮箱（最上层，入场动画后淡出） -->
     <FrameLayout
@@ -133,18 +240,18 @@
 
             <ImageView
                 android:id="@+id/splashIcon"
-                android:alpha="0"
                 android:layout_width="88dp"
                 android:layout_height="88dp"
+                android:alpha="0"
                 android:contentDescription="ZCode"
                 android:src="@mipmap/ic_launcher" />
 
             <TextView
                 android:id="@+id/splashTitle"
-                android:alpha="0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:alpha="0"
                 android:letterSpacing="0.35"
                 android:text="Z C O D E"
                 android:textColor="#F5F7FA"
@@ -153,18 +260,18 @@
 
             <View
                 android:id="@+id/splashLine"
-                android:alpha="0"
                 android:layout_width="24dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="14dp"
+                android:alpha="0"
                 android:background="#661B6DFF" />
 
             <TextView
                 android:id="@+id/splashEmail"
-                android:alpha="0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:alpha="0"
                 android:text="zhouwj.fi@gmail.com"
                 android:textColor="#98A2B3"
                 android:textSize="12sp" />

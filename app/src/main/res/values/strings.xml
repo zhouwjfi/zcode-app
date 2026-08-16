@@ -2,8 +2,12 @@
 <resources>
     <string name="app_name">ZCode</string>
     <string name="scan_button">Scan QR Code</string>
-    <string name="manual_toggle">Enter address manually</string>
-    <string name="go_button">Go</string>
+    <string name="scan_title">Scan the desktop QR code</string>
+    <string name="scan_sub">ZCode → Remote Control</string>
+    <string name="camera_hint">[ · · · · · · · ]&#10;CAMERA OFF</string>
+    <string name="manual_toggle">&gt; enter address manually</string>
+    <string name="scan_toggle">&gt; scan QR code</string>
+    <string name="go_button">Connect</string>
     <string name="reconfigure_hint">Long-press the app icon to change the URL</string>
     <string name="url_hint">https://example.com</string>
     <string name="toast_empty_url">Please enter a URL</string>

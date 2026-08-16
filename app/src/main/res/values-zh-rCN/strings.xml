@@ -2,8 +2,12 @@
 <resources>
     <string name="app_name">ZCode</string>
     <string name="scan_button">扫一扫</string>
-    <string name="manual_toggle">手动输入地址</string>
-    <string name="go_button">进入</string>
+    <string name="scan_title">扫描桌面端二维码</string>
+    <string name="scan_sub">ZCode → Remote Control</string>
+    <string name="camera_hint">[ · · · · · · · ]&#10;相机未授权</string>
+    <string name="manual_toggle">&gt; 手动输入地址</string>
+    <string name="scan_toggle">&gt; 扫码接入</string>
+    <string name="go_button">连接</string>
     <string name="reconfigure_hint">长按应用图标可修改网址</string>
     <string name="url_hint">https://example.com</string>
     <string name="toast_empty_url">请输入 URL</string>
