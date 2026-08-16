@@ -2,11 +2,13 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-把任意网站变成全屏 Android App 的 WebView 壳（WebView wrapper）。网站**不需要支持 PWA**。
+[ZCode](https://zcode.z.ai) Remote Control 的安卓客户端。扫描 ZCode 桌面端弹出的二维码，即可在手机上连接到你的桌面窗口——查看和切换工作区与任务、跟进 Agent 进度、随时下达后续指令。连接本质上是一个网址，所以任意网页也可以正常打开。
+
+> Remote Control 用于把当前 ZCode 桌面窗口临时开放给手机访问；指令由桌面端背后的机器执行，手机只是控制端。详见[官方文档](https://zcode.z.ai/cn/docs/remote-control)。
 
 ## 功能
 
-- 📷 **扫码配置**：首次启动扫二维码即可设置 URL（也可手动输入）
+- 📷 **扫码接入**：扫 ZCode 桌面端 Remote Control 弹窗中的二维码完成配置（也支持手动输入）
 - 🖥 **全屏沉浸**：隐藏状态栏 / 导航栏，无任何浏览器 UI
 - 🔒 **设置持久化**：URL 保存后，之后启动直接进入网页
 - ✋ **长按屏幕**随时重新打开设置页修改 URL
