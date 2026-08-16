@@ -16,6 +16,30 @@
 - Cookie / localStorage / JS 全支持；`tel:`、`mailto:` 等外部链接交给系统
 - 允许 HTTP 明文，内网地址可用（可在 Manifest 关闭 `usesCleartextTraffic`）
 
+## 使用
+
+### 1. 扫码接入（推荐）
+
+桌面端打开 ZCode → 启动 **Remote Control** 显示二维码 → 手机打开 ZCode app，自动开始扫码，识别即连。
+
+![扫码接入](docs/images/usage-scan.png)
+
+### 2. 手动输入
+
+点 `> 手动输入地址`，输入桌面端 Remote Control 弹窗中显示的地址（如 `https://192.168.1.10:5173`），点「连接」。
+
+![手动输入](docs/images/usage-manual.png)
+
+### 3. 手机上继续工作
+
+连接后可查看/切换工作区与任务、跟进 Agent 进度、下达后续指令——指令由桌面端背后的机器执行。
+
+![已连接](docs/images/usage-connected.png)
+
+### 修改网址
+
+**长按桌面应用图标** →「修改网址」；或在网页退无可退时按返回键，选「修改网址」。
+
 ## 构建
 
 ```bash

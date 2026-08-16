@@ -16,6 +16,30 @@ Unofficial Android client for [ZCode](https://zcode.z.ai) Remote Control. Scan t
 - Full Cookie / localStorage / JS support; external schemes (`tel:`, `mailto:`…) handed to the system
 - Cleartext HTTP allowed, so intranet URLs work (disable via `usesCleartextTraffic` in the Manifest if desired)
 
+## Usage
+
+### 1. Connect by scanning (recommended)
+
+Open ZCode on your desktop, start **Remote Control** to show the QR code, then open ZCode on your phone — scanning starts automatically, and the connection is made the moment the code is recognized.
+
+![Scan to connect](docs/images/usage-scan.png)
+
+### 2. Connect manually
+
+Tap `> enter address manually`, type the address shown in the desktop Remote Control dialog (e.g. `https://192.168.1.10:5173`), then tap **Connect**.
+
+![Manual input](docs/images/usage-manual.png)
+
+### 3. Work from your phone
+
+Once connected you can browse workspaces and tasks, follow Agent progress, and send follow-up instructions — commands run on the machine behind your desktop ZCode.
+
+![Connected](docs/images/usage-connected.png)
+
+### Changing the URL
+
+Long-press the **app icon** on the launcher → “Change URL”, or press Back at the end of web history and pick “Change URL”.
+
 ## Build
 
 ```bash
