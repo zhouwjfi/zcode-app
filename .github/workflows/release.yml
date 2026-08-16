@@ -18,9 +18,11 @@ jobs:
           java-version: '17'
 
       - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
 
       - name: Build release APK
-        run: gradle wrapper && ./gradlew assembleRelease
+        run: gradle assembleRelease
 
       - name: Create GitHub Release and upload APK
         uses: softprops/action-gh-release@v2
