@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
         urlInput.setSelection(urlInput.getText().length());
         findViewById(R.id.manualInput).setVisibility(View.GONE);
         setupScreen.setVisibility(View.VISIBLE);
+        applyImmersive();
     }
 
     private void submitUrl() {
@@ -258,10 +259,18 @@ public class MainActivity extends AppCompatActivity {
         }
         getPrefs().edit().putString(KEY_URL, raw).apply();
         setupScreen.setVisibility(View.GONE);
+        applyImmersive();
         webView.loadUrl(raw);
     }
 
+    /** 网页模式：沉浸式全屏；设置页模式：退出 immersive，保证粘贴等选择浮层能弹出 */
     private void applyImmersive() {
+        boolean setup = setupScreen != null && setupScreen.getVisibility() == View.VISIBLE;
+        if (setup) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            return;
+        }
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
