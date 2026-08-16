@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.WebWrap" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:statusBarColor">@android:color/black</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
+    </style>
+
+    <!-- 低版本：无系统启动屏，直接用深色主题（品牌尾屏由布局承担） -->
+    <style name="Theme.WebWrap.Splash" parent="Theme.WebWrap">
+        <item name="android:windowBackground">#0B0E14</item>
+    </style>
+</resources>

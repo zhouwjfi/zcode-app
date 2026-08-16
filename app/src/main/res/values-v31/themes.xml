@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+：系统启动屏压成纯深色空屏（图标透明），品牌动画由布局内尾屏承担 -->
+    <style name="Theme.WebWrap.Splash" parent="Theme.WebWrap">
+        <item name="android:windowSplashScreenBackground">#0B0E14</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/empty</item>
+        <item name="android:windowBackground">#0B0E14</item>
+    </style>
+</resources>

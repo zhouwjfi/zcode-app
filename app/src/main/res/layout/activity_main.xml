@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- 首次启动 / 设置 URL 页面 -->
+    <ScrollView
+        android:id="@+id/setupScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0B0E14"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:paddingTop="36dp"
+                android:paddingBottom="32dp">
+
+                <ImageView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:contentDescription="ZCode"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="ZCode"
+                    android:textColor="#0B0E14"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/scanButton"
+                    android:layout_width="280dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="28dp"
+                    android:background="@drawable/bg_btn_primary"
+                    android:text="@string/scan_button"
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/manualToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:padding="6dp"
+                    android:text="@string/manual_toggle"
+                    android:textColor="#1B6DFF"
+                    android:textSize="13sp" />
+
+                <!-- 手动输入区，默认隐藏 -->
+                <LinearLayout
+                    android:id="@+id/manualInput"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/urlInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:background="@drawable/bg_input"
+                        android:hint="@string/url_hint"
+                        android:imeOptions="actionGo"
+                        android:inputType="textUri"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="#0B0E14"
+                        android:textColorHint="#98A2B3"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/goButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_btn_secondary"
+                        android:text="@string/go_button"
+                        android:textColor="#1B6DFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/reconfigure_hint"
+                android:textColor="#475467"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 品牌尾屏：图标 + wordmark + 邮箱（最上层，入场动画后淡出） -->
+    <FrameLayout
+        android:id="@+id/splashScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_splash_glow">
+
+        <LinearLayout
+            android:id="@+id/splashContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/splashIcon"
+                android:alpha="0"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:contentDescription="ZCode"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/splashTitle"
+                android:alpha="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:letterSpacing="0.35"
+                android:text="Z C O D E"
+                android:textColor="#F5F7FA"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/splashLine"
+                android:alpha="0"
+                android:layout_width="24dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="14dp"
+                android:background="#661B6DFF" />
+
+            <TextView
+                android:id="@+id/splashEmail"
+                android:alpha="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="zhouwj.fi@gmail.com"
+                android:textColor="#98A2B3"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

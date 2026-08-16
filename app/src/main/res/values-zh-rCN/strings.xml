@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZCode</string>
+    <string name="scan_button">扫一扫</string>
+    <string name="manual_toggle">手动输入地址</string>
+    <string name="go_button">进入</string>
+    <string name="reconfigure_hint">长按屏幕可重新设置</string>
+    <string name="url_hint">https://example.com</string>
+    <string name="toast_empty_url">请输入 URL</string>
+    <string name="toast_camera_denied">需要相机权限才能扫码</string>
+    <string name="scan_prompt">对准二维码</string>
+</resources>

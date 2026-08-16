@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZCode</string>
+    <string name="scan_button">Scan QR Code</string>
+    <string name="manual_toggle">Enter address manually</string>
+    <string name="go_button">Go</string>
+    <string name="reconfigure_hint">Long-press the screen to reconfigure</string>
+    <string name="url_hint">https://example.com</string>
+    <string name="toast_empty_url">Please enter a URL</string>
+    <string name="toast_camera_denied">Camera permission is required to scan</string>
+    <string name="scan_prompt">Point at the QR code</string>
+</resources>
