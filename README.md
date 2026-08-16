@@ -32,17 +32,3 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 ```bash
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
-
-## Customization
-
-| What | Where |
-|---|---|
-| App name | `android:label` in `app/src/main/AndroidManifest.xml` |
-| Package id | `applicationId` in `app/build.gradle.kts` |
-| Splash texts / email | `app/src/main/res/layout/activity_main.xml` (splashScreen section) |
-| Accent color | `res/values/themes.xml`, `res/drawable/bg_btn_*.xml` |
-| Icon | replace `res/mipmap-*/ic_launcher.png` (rescale from a 1024×1024 source) |
-
-## License
-
-MIT

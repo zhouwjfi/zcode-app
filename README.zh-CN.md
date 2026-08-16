@@ -32,17 +32,3 @@ APK 输出：`app/build/outputs/apk/debug/app-debug.apk`
 ```bash
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
-
-## 自定义
-
-| 想改什么 | 位置 |
-|---|---|
-| 应用名 | `app/src/main/AndroidManifest.xml` 的 `android:label` |
-| 包名 | `app/build.gradle.kts` 的 `applicationId` |
-| 启动屏文案/邮箱 | `app/src/main/res/layout/activity_main.xml`（splashScreen 部分） |
-| 主题色 | `res/values/themes.xml`、`res/drawable/bg_btn_*.xml` |
-| 图标 | 替换 `res/mipmap-*/ic_launcher.png`（1024×1024 原图重新缩放） |
-
-## License
-
-MIT
