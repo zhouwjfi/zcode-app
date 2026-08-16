@@ -14,9 +14,20 @@ android {
         versionName = "1.0"
     }
 
+    signingConfigs {
+        create("release") {
+            // 项目内公开的发布密钥：仅保证 APK 可安装/可覆盖升级，不承载保密用途
+            storeFile = file("release.keystore")
+            storePassword = "zcode123456"
+            keyAlias = "zcode"
+            keyPassword = "zcode123456"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
